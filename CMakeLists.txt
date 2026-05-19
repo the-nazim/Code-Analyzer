@@ -25,4 +25,5 @@ target_link_libraries(analyzer
     clangTooling
     clangBasic
     clangASTMatchers
+    clangFrontend
 )
