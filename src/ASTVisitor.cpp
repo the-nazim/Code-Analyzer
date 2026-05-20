@@ -60,7 +60,9 @@ void ASTVisitor::ReportUnusedVariables() {
             );
 
             std::cout
-                << sourceManager.getFilename(loc).str()
+                << llvm::sys::path::filename(
+                       sourceManager.getFilename(loc)
+                ).str()
                 << ":"
                 << fullLoc.getSpellingLineNumber()
                 << ":"

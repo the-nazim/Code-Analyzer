@@ -3,6 +3,7 @@
 
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Basic/SourceManager.h>
+#include <llvm/Support/Path.h> 
 #include <string>
 #include <set>
 #include <map>
