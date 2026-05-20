@@ -1,7 +1,4 @@
-#include <clang/Tooling/CommonOptionsParser.h>
-#include <clang/Tooling/Tooling.h>
-#include <clang/Frontend/FrontendActions.h>
-#include <llvm/Support/CommandLine.h>
+#include "../include/main.h"
 
 using namespace clang;
 using namespace clang::tooling;
@@ -27,5 +24,5 @@ int main(int argc, const char **argv)
         OptionsParser.getSourcePathList()
     );
 
-    return Tool.run(newFrontendActionFactory<SyntaxOnlyAction>().get());
+    return Tool.run(newFrontendActionFactory<AnalyzerAction>().get());
 }
