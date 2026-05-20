@@ -8,9 +8,6 @@
 
 class AnalyzerConsumer : public clang::ASTConsumer {
 
-private:
-    ASTVisitor visitor;
-
 public:
     void HandleTranslationUnit(
         clang::ASTContext &context

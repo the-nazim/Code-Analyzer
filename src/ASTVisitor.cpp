@@ -3,13 +3,15 @@
 
 using namespace std;
 
+ASTVisitor::ASTVisitor(clang::ASTContext *ctx) : context(ctx) {}
+
 bool ASTVisitor::VisitVarDecl(clang::VarDecl *decl) {
     if (decl->isImplicit() || !decl->getIdentifier()) {
         return true;
     }
 
     string variableName = decl->getNameAsString();
-    declaredVars.insert(variableName);
+    declaredVars[variableName] = decl;
 
     cout << "Variable: "
               << variableName
@@ -33,42 +35,40 @@ bool ASTVisitor::VisitDeclRefExpr(clang::DeclRefExpr *exp) {
 
     if (decl) {
 
-        string usedName =
+        std::string usedName =
             decl->getNameAsString();
 
         usedVars.insert(usedName);
-
-        cout
-            << "Used Variable: "
-            << usedName
-            << endl;
     }
     return true;
 }
 
 void ASTVisitor::ReportUnusedVariables() {
-    bool foundUnused = false;
+    auto &sourceManager =
+        context->getSourceManager();
 
-    for (const auto &var : declaredVars) {
+    for (const auto &[varName, decl] : declaredVars) {
 
-        if (usedVars.find(var) == usedVars.end()) {
+        if (usedVars.find(varName) == usedVars.end()) {
 
-            if (!foundUnused) {
-                cout
-                    << "\n=== UNUSED VARIABLES ===\n";
-            }
+            clang::SourceLocation loc =
+                decl->getLocation();
 
-            foundUnused = true;
+            clang::FullSourceLoc fullLoc(
+                loc,
+                sourceManager
+            );
 
-            cout
-                << "Unused Variable: "
-                << var
-                << endl;
+            std::cout
+                << sourceManager.getFilename(loc).str()
+                << ":"
+                << fullLoc.getSpellingLineNumber()
+                << ":"
+                << fullLoc.getSpellingColumnNumber()
+                << ": warning: unused variable '"
+                << varName
+                << "'"
+                << std::endl;
         }
-    }
-
-    if (!foundUnused) {
-        cout
-            << "\nNo unused variables found.\n";
     }
 }
